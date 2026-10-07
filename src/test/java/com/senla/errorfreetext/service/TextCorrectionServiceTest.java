@@ -18,6 +18,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -26,6 +27,9 @@ class TextCorrectionServiceTest {
 
     @Mock
     private SpellerClient spellerClient;
+
+    @Captor
+    private ArgumentCaptor<List<String>> captor;
 
     private TextCorrectionService textCorrectionService;
 
@@ -121,7 +125,6 @@ class TextCorrectionServiceTest {
         String result = textCorrectionService.correct(text, Language.EN);
 
         assertThat(result).isEqualTo(text);
-        ArgumentCaptor<List<String>> captor = ArgumentCaptor.forClass(List.class);
         verify(spellerClient, times(2)).checkTexts(captor.capture(), eq(Language.EN), eq(0));
         List<List<String>> sentChunks = captor.getAllValues();
         assertThat(sentChunks.get(0).get(0)).hasSize(SpellerConstants.MAX_CHUNK_SIZE);
